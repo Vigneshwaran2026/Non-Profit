@@ -1,0 +1,3373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NonProfit Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Onest:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #020D19;
+            --secondary-color: #F8F8F8;
+            --text-color: #828282;
+            --accent-color: #FF6D00;
+            --white-color: #FFFFFF;
+            --divider-color: #020D1914;
+            --dark-divider-color: #FFFFFF1A;
+            --error-color: rgb(230, 87, 87);
+            --success-color: #27ae60;
+            --warning-color: #f1c40f;
+            --info-color: #3498db;
+            --default-font: "Inter", serif;
+            --accent-font: "Onest", serif;
+            --sidebar-width: 280px;
+            --sidebar-collapsed: 80px;
+            --header-height: 80px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-sm: 0 2px 8px rgba(2, 13, 25, 0.04);
+            --shadow-md: 0 4px 20px rgba(2, 13, 25, 0.08);
+            --shadow-lg: 0 8px 40px rgba(2, 13, 25, 0.12);
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--default-font);
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--secondary-color);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 3px;
+        }
+
+        /* Layout */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--primary-color);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            transition: var(--transition);
+            overflow-y: auto;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed);
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--dark-divider-color);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            height: var(--header-height);
+            flex-shrink: 0;
+        }
+
+        .logo {
+            width: 45px;
+            height: 45px;
+            background: var(--accent-color);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--accent-font);
+            font-weight: 700;
+            color: var(--white-color);
+            font-size: 20px;
+            flex-shrink: 0;
+            animation: pulse 2s infinite;
+            box-shadow: 0 4px 15px rgba(255, 109, 0, 0.3);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 4px 15px rgba(255, 109, 0, 0.3); }
+            50% { transform: scale(1.05); box-shadow: 0 6px 20px rgba(255, 109, 0, 0.4); }
+        }
+
+        .logo-text {
+            font-family: var(--accent-font);
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--white-color);
+            white-space: nowrap;
+            opacity: 1;
+            transition: var(--transition);
+        }
+
+        .sidebar.collapsed .logo-text {
+            opacity: 0;
+            width: 0;
+        }
+
+        .nav-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-label {
+            padding: 0 24px 12px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-color);
+            font-weight: 600;
+            white-space: nowrap;
+            opacity: 1;
+            transition: var(--transition);
+        }
+
+        .sidebar.collapsed .nav-label {
+            opacity: 0;
+            padding: 0;
+            height: 0;
+            margin: 0;
+        }
+
+        .nav-item {
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: var(--transition);
+            position: relative;
+            margin: 4px 12px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            background: var(--dark-divider-color);
+            color: var(--white-color);
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background: var(--accent-color);
+            color: var(--white-color);
+            box-shadow: 0 4px 15px rgba(255, 109, 0, 0.3);
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .nav-text {
+            white-space: nowrap;
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 1;
+            transition: var(--transition);
+            flex: 1;
+        }
+
+        .sidebar.collapsed .nav-text {
+            opacity: 0;
+            width: 0;
+        }
+
+        .nav-badge {
+            background: var(--accent-color);
+            color: var(--white-color);
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            opacity: 1;
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+
+        .sidebar.collapsed .nav-badge {
+            opacity: 0;
+            width: 0;
+            padding: 0;
+        }
+
+        /* Fixed Profile Section - Properly Styled */
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid var(--dark-divider-color);
+            background: var(--primary-color);
+            flex-shrink: 0;
+            margin-top: auto;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            border-radius: var(--radius-md);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--dark-divider-color);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .user-profile::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 109, 0, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .user-profile:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-color);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .user-profile:hover::before {
+            opacity: 1;
+        }
+
+        .user-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-color), #ff8533);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white-color);
+            font-weight: 700;
+            font-size: 16px;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-avatar::after {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-color);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .user-profile:hover .user-avatar::after {
+            opacity: 1;
+            animation: rotate 2s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .user-info {
+            opacity: 1;
+            transition: var(--transition);
+            overflow: hidden;
+            flex: 1;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sidebar.collapsed .user-info {
+            opacity: 0;
+            width: 0;
+            flex: 0;
+        }
+
+        .user-name {
+            color: var(--white-color);
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+            margin-bottom: 2px;
+        }
+
+        .user-role {
+            color: var(--text-color);
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .user-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 6px;
+            font-size: 11px;
+            color: var(--success-color);
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--success-color);
+            border-radius: 50%;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .user-menu-icon {
+            color: var(--text-color);
+            font-size: 14px;
+            opacity: 0;
+            transition: var(--transition);
+            position: relative;
+            z-index: 1;
+        }
+
+        .user-profile:hover .user-menu-icon {
+            opacity: 1;
+            transform: translateX(4px);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            transition: var(--transition);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar.collapsed + .main-content {
+            margin-left: var(--sidebar-collapsed);
+        }
+
+        /* Header */
+        .header {
+            background: var(--white-color);
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            height: var(--header-height);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .toggle-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            background: var(--secondary-color);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 18px;
+            transition: var(--transition);
+        }
+
+        .toggle-btn:hover {
+            background: var(--accent-color);
+            color: var(--white-color);
+            transform: rotate(180deg);
+        }
+
+        .search-box {
+            position: relative;
+            width: 320px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 14px 20px 14px 48px;
+            border: 2px solid var(--divider-color);
+            border-radius: var(--radius-md);
+            font-family: var(--default-font);
+            font-size: 14px;
+            transition: var(--transition);
+            background: var(--secondary-color);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 4px rgba(255, 109, 0, 0.1);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-color);
+            font-size: 18px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            background: var(--secondary-color);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 18px;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .header-btn:hover {
+            background: var(--accent-color);
+            color: var(--white-color);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(255, 109, 0, 0.3);
+        }
+
+        .notification-dot {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: var(--error-color);
+            border-radius: 50%;
+            animation: blink 1.5s infinite;
+            border: 2px solid var(--secondary-color);
+        }
+
+        /* Content Area */
+        .content {
+            padding: 30px;
+            flex: 1;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .page-title {
+            font-family: var(--accent-font);
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            animation: slideInLeft 0.5s ease;
+        }
+
+        .page-subtitle {
+            color: var(--text-color);
+            font-size: 16px;
+            animation: slideInLeft 0.5s ease 0.1s both;
+        }
+
+        .page-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: var(--radius-sm);
+            font-family: var(--default-font);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+            color: var(--white-color);
+            box-shadow: 0 4px 15px rgba(255, 109, 0, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 109, 0, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--white-color);
+            color: var(--primary-color);
+            border: 2px solid var(--divider-color);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--white-color);
+            padding: 24px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 0.5s ease both;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--accent-color);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 20px;
+        }
+
+        .stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            background: rgba(255, 109, 0, 0.1);
+            color: var(--accent-color);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover .stat-icon {
+            background: var(--accent-color);
+            color: var(--white-color);
+            transform: rotate(10deg) scale(1.1);
+        }
+
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: rgba(39, 174, 96, 0.1);
+            color: var(--success-color);
+        }
+
+        .stat-trend.down {
+            background: rgba(230, 87, 87, 0.1);
+            color: var(--error-color);
+        }
+
+        .stat-value {
+            font-family: var(--accent-font);
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .stat-label {
+            color: var(--text-color);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .stat-comparison {
+            margin-top: 12px;
+            font-size: 12px;
+            color: var(--text-color);
+        }
+
+        .stat-comparison strong {
+            color: var(--primary-color);
+        }
+
+        /* Charts Section */
+        .charts-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background: var(--white-color);
+            padding: 28px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            animation: slideUp 0.5s ease 0.5s both;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .chart-title {
+            font-family: var(--accent-font);
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .chart-actions {
+            display: flex;
+            gap: 8px;
+            background: var(--secondary-color);
+            padding: 4px;
+            border-radius: var(--radius-sm);
+        }
+
+        .chart-btn {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-family: var(--default-font);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .chart-btn:hover, .chart-btn.active {
+            background: var(--white-color);
+            color: var(--accent-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .chart-container {
+            height: 320px;
+            position: relative;
+        }
+
+        .donut-chart-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .donut-chart {
+            width: 220px;
+            height: 220px;
+            position: relative;
+        }
+
+        .donut-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .donut-value {
+            font-family: var(--accent-font);
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .donut-label {
+            font-size: 13px;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        /* SVG Chart */
+        .line-chart {
+            width: 100%;
+            height: 100%;
+        }
+
+        .chart-line {
+            fill: none;
+            stroke: var(--accent-color);
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: drawLine 2s ease forwards;
+        }
+
+        @keyframes drawLine {
+            to { stroke-dashoffset: 0; }
+        }
+
+        .chart-area {
+            fill: url(#gradient);
+            opacity: 0;
+            animation: fadeIn 1s ease 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 0.3; }
+        }
+
+        .chart-dot {
+            fill: var(--white-color);
+            stroke: var(--accent-color);
+            stroke-width: 3;
+            r: 6;
+            opacity: 0;
+            animation: popIn 0.3s ease forwards;
+            cursor: pointer;
+            transition: r 0.2s ease;
+        }
+
+        .chart-dot:hover {
+            r: 8;
+        }
+
+        .chart-dot:nth-child(1) { animation-delay: 0.5s; }
+        .chart-dot:nth-child(2) { animation-delay: 0.6s; }
+        .chart-dot:nth-child(3) { animation-delay: 0.7s; }
+        .chart-dot:nth-child(4) { animation-delay: 0.8s; }
+        .chart-dot:nth-child(5) { animation-delay: 0.9s; }
+        .chart-dot:nth-child(6) { animation-delay: 1.0s; }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Legend */
+        .chart-legend {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        /* Activity Section */
+        .activity-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+
+        .activity-card {
+            background: var(--white-color);
+            padding: 28px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            animation: slideUp 0.5s ease 0.6s both;
+        }
+
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .activity-item:hover {
+            background: var(--secondary-color);
+            transform: translateX(8px);
+            border-color: var(--divider-color);
+        }
+
+        .activity-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+            transition: var(--transition);
+        }
+
+        .activity-item:hover .activity-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .activity-icon.donation { background: rgba(255, 109, 0, 0.1); color: var(--accent-color); }
+        .activity-icon.user { background: rgba(39, 174, 96, 0.1); color: var(--success-color); }
+        .activity-icon.event { background: rgba(155, 89, 182, 0.1); color: #9b59b6; }
+        .activity-icon.volunteer { background: rgba(52, 152, 219, 0.1); color: var(--info-color); }
+        .activity-icon.alert { background: rgba(230, 87, 87, 0.1); color: var(--error-color); }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 4px;
+        }
+
+        .activity-text {
+            font-size: 13px;
+            color: var(--text-color);
+            line-height: 1.5;
+        }
+
+        .activity-time {
+            font-size: 12px;
+            color: var(--text-color);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        /* Tables Section */
+        .tables-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+
+        .table-card {
+            background: var(--white-color);
+            padding: 28px;
+            border-radius: var(--radius-lg);
+            margin-top: 20px;
+            box-shadow: var(--shadow-md);
+            animation: slideUp 0.5s ease 0.7s both;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .view-all {
+            color: var(--accent-color);
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+        }
+
+        .view-all:hover {
+            gap: 10px;
+        }
+
+       .data-table {
+    width: 100%;
+    min-width: unset;
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+
+@media (max-width: 768px) {
+
+    * {
+        max-width: 100%;
+    }
+}
+.content {
+    overflow-x: hidden;
+}
+        .data-table th {
+            text-align: left;
+            padding: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--divider-color);
+        }
+
+        .data-table td {
+            padding: 16px 12px;
+            font-size: 14px;
+            border-bottom: 1px solid var(--divider-color);
+            transition: var(--transition);
+        }
+
+        .data-table tr:hover td {
+            background: var(--secondary-color);
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .user-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-thumb {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-color), #ff8533);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white-color);
+            font-weight: 600;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .user-details h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 2px;
+        }
+
+        .user-details p {
+            font-size: 12px;
+            color: var(--text-color);
+        }
+
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-badge.active {
+            background: rgba(39, 174, 96, 0.1);
+            color: var(--success-color);
+        }
+
+        .status-badge.pending {
+            background: rgba(241, 196, 15, 0.1);
+            color: var(--warning-color);
+        }
+
+        .status-badge.completed {
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--info-color);
+        }
+
+        .amount {
+            font-family: var(--accent-font);
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 15px;
+        }
+
+        /* Campaign Progress */
+        .campaign-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .campaign-item {
+            padding: 20px;
+            background: var(--secondary-color);
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .campaign-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--divider-color);
+            background: var(--white-color);
+        }
+
+        .campaign-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+
+        .campaign-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 4px;
+        }
+
+        .campaign-meta {
+            font-size: 13px;
+            color: var(--text-color);
+        }
+
+        .campaign-percent {
+            font-family: var(--accent-font);
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--divider-color);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 12px;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-color), #ff8533);
+            border-radius: 4px;
+            transition: width 1s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Quick Actions Grid */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .action-card {
+            background: var(--white-color);
+            padding: 24px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            animation: slideUp 0.5s ease 0.8s both;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--accent-color);
+        }
+
+        .action-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin: 0 auto 16px;
+            background: rgba(255, 109, 0, 0.1);
+            color: var(--accent-color);
+            transition: var(--transition);
+        }
+
+        .action-card:hover .action-icon {
+            background: var(--accent-color);
+            color: var(--white-color);
+            transform: scale(1.1) rotate(10deg);
+        }
+
+        .action-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 4px;
+        }
+
+        .action-desc {
+            font-size: 13px;
+            color: var(--text-color);
+        }
+
+        /* Calendar Widget */
+        .calendar-widget {
+            background: var(--white-color);
+            padding: 24px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            margin-bottom: 30px;
+            animation: slideUp 0.5s ease 0.9s both;
+        }
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* IMPORTANT */
+    margin-bottom: 10px; /* reduce space */
+}
+
+        .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px; /* reduce gap */
+}
+
+.calendar-day {
+    height: 40px;   /* FIXED HEIGHT */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.3s;
+    position: relative;
+}
+
+        .calendar-day:hover {
+            background: var(--secondary-color);
+        }
+
+        .calendar-day.active {
+            background: var(--accent-color);
+            color: var(--white-color);
+            box-shadow: 0 4px 12px rgba(255, 109, 0, 0.3);
+        }
+
+        .calendar-day.has-event::after {
+            content: '';
+            position: absolute;
+            bottom: 6px;
+            width: 4px;
+            height: 4px;
+            background: var(--accent-color);
+            border-radius: 50%;
+        }
+
+        .calendar-day.active.has-event::after {
+            background: var(--white-color);
+        }
+
+        /* Mobile Menu Overlay */
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(2, 13, 25, 0.5);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--accent-color);
+            border: none;
+            border-radius: 50%;
+            color: var(--white-color);
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(255, 109, 0, 0.4);
+            transition: var(--transition);
+            z-index: 998;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fab:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 6px 30px rgba(255, 109, 0, 0.5);
+        }
+
+        /* ==================== RESPONSIVE STYLES ==================== */
+
+        /* Tablet (1024px and below) */
+        @media (max-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+
+            .tables-section {
+                grid-template-columns: 1fr;
+            }
+
+            .activity-section {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .search-box {
+                width: 240px;
+            }
+        }
+
+        /* Mobile (768px and below) */
+        @media (max-width: 768px) {
+            :root {
+                --sidebar-width: 280px;
+            }
+
+            /* Sidebar Mobile */
+            .sidebar {
+                transform: translateX(-100%);
+                width: var(--sidebar-width) !important;
+                z-index: 1001;
+            }
+
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            .sidebar.collapsed {
+                transform: translateX(-100%);
+                width: var(--sidebar-width) !important;
+            }
+
+            .sidebar.collapsed .logo-text,
+            .sidebar.collapsed .nav-text,
+            .sidebar.collapsed .nav-label,
+            .sidebar.collapsed .user-info {
+                opacity: 1;
+                width: auto;
+            }
+
+            .sidebar.collapsed .nav-badge {
+                opacity: 1;
+                width: auto;
+                padding: 2px 8px;
+            }
+
+            /* Main Content Mobile */
+            .main-content {
+                margin-left: 0 !important;
+            }
+
+            /* Header Mobile */
+            .header {
+                padding: 16px 20px;
+                height: auto;
+                min-height: 70px;
+            }
+
+            .header-left {
+                gap: 12px;
+                flex: 1;
+            }
+
+            .toggle-btn {
+                width: 40px;
+                height: 40px;
+            }
+
+            .search-box {
+                width: 100%;
+                max-width: 200px;
+            }
+
+            .search-box input {
+                padding: 12px 16px 12px 40px;
+            }
+
+            .header-right {
+                gap: 8px;
+            }
+
+            .header-btn {
+                width: 40px;
+                height: 40px;
+            }
+
+            /* Content Mobile */
+            .content {
+                padding: 20px;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+
+            .page-actions {
+                width: 100%;
+            }
+
+            .btn {
+                flex: 1;
+                justify-content: center;
+            }
+
+            /* Stats Grid Mobile */
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .stat-card {
+                padding: 20px;
+            }
+
+            .stat-value {
+                font-size: 28px;
+            }
+
+            /* Charts Mobile */
+            .chart-card {
+                padding: 20px;
+            }
+
+            .chart-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .chart-container {
+                height: 250px;
+            }
+
+            /* Activity Mobile */
+            .activity-card {
+                padding: 20px;
+            }
+
+            .activity-item {
+                padding: 12px;
+            }
+
+            /* Tables Mobile */
+            .table-card {
+                padding: 20px;
+                overflow-x: auto;
+            }
+
+
+            /* Quick Actions Mobile */
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .action-card {
+                padding: 16px;
+            }
+
+            .action-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+            }
+
+            .action-title {
+                font-size: 13px;
+            }
+
+            .action-desc {
+                font-size: 11px;
+            }
+
+            /* Calendar Mobile */
+            .calendar-widget {
+                padding: 16px;
+            }
+
+            .calendar-day {
+                font-size: 12px;
+            }
+
+            /* FAB Mobile */
+            .fab {
+                bottom: 20px;
+                right: 20px;
+                width: 56px;
+                height: 56px;
+            }
+        }
+
+        /* Small Mobile (480px and below) */
+        @media (max-width: 480px) {
+            .header {
+                padding: 12px 16px;
+            }
+
+            .search-box {
+                display: none;
+            }
+
+            .content {
+                padding: 16px;
+            }
+
+            .page-title {
+                font-size: 22px;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .action-card {
+                display: flex;
+                align-items: center;
+                text-align: left;
+                gap: 16px;
+            }
+
+            .action-icon {
+                margin: 0;
+                width: 48px;
+                height: 48px;
+                flex-shrink: 0;
+            }
+
+            .chart-actions {
+                width: 100%;
+                justify-content: stretch;
+            }
+
+            .chart-btn {
+                flex: 1;
+                text-align: center;
+            }
+
+            .user-cell {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .stat-header {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .stat-trend {
+                align-self: flex-start;
+            }
+        }
+
+        /* Animations */
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            .sidebar, .header, .fab {
+                display: none;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+        }
+
+        /* Hide on desktop */
+.toggle-btn {
+    display: none;
+}
+
+/* Show only on mobile devices */
+@media (max-width: 768px) {
+    .toggle-btn {
+        display: block;
+    }
+}
+
+#eventList {
+    margin-top: 15px;
+}
+
+.event-item {
+    background: #f8f8f8;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    border-left: 4px solid #FF6D00;
+}
+
+.calendar-day.has-event::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    width: 6px;
+    height: 6px;
+    background: #FF6D00;
+    border-radius: 50%;
+}
+
+.calendar-day.header {
+    font-weight: 600;
+    color: var(--text-color);
+    cursor: default;
+}
+
+.calendar-day.header:hover {
+    background: transparent;
+}
+
+.logo-img {
+    width: 140px;
+    height: auto;
+    object-fit: contain;
+}
+
+.event-card {
+    display: flex;
+    gap: 15px;
+    padding: 16px;
+    border-radius: 12px;
+    background: var(--secondary-color);
+    margin-bottom: 12px;
+    transition: 0.3s;
+}
+
+.event-card:hover {
+    transform: translateX(6px);
+    background: var(--white-color);
+    box-shadow: var(--shadow-sm);
+}
+
+.event-date-box {
+    width: 55px;
+    height: 55px;
+    background: var(--accent-color);
+    color: white;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.event-title {
+    font-weight: 600;
+}
+
+.event-meta {
+    font-size: 12px;
+    color: var(--text-color);
+}
+
+.page-section {
+    display: none;
+}
+
+#dashboardSection {
+    display: block; /* default */
+}
+
+/* Counter Animation */
+.counter {
+    transition: 1s;
+}
+
+/* Bar Chart */
+.bar-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 15px;
+    height: 200px;
+}
+
+.bar {
+    flex: 1;
+    background: var(--accent-color);
+    height: var(--h);
+    color: white;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    border-radius: 8px 8px 0 0;
+    font-size: 12px;
+    animation: growBar 1s ease;
+}
+
+@keyframes growBar {
+    from { height: 0; }
+}
+
+/* Modern Donut */
+.modern-donut {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: conic-gradient(
+        var(--accent-color) 0% 70%,
+        #eee 70% 100%
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: rotateDonut 1s ease;
+}
+
+@keyframes rotateDonut {
+    from { transform: rotate(-180deg); }
+}
+
+.campaign-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.campaign-card {
+    background: var(--secondary-color);
+    padding: 20px;
+    border-radius: 16px;
+    transition: 0.3s;
+}
+
+.campaign-card:hover {
+    transform: translateY(-5px);
+    background: var(--white-color);
+    box-shadow: var(--shadow-sm);
+}
+
+.progress-bar {
+    height: 8px;
+    background: #eee;
+    border-radius: 10px;
+    margin: 15px 0;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--accent-color);
+    border-radius: 10px;
+    transition: width 1s ease;
+}
+
+.campaign-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+}
+
+.settings-layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 20px;
+}
+
+/* Sidebar */
+.settings-sidebar {
+    background: var(--secondary-color);
+    border-radius: 12px;
+    padding: 10px;
+}
+
+.settings-menu {
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.settings-menu:hover {
+    background: #eee;
+}
+
+.settings-menu.active {
+    background: var(--accent-color);
+    color: white;
+}
+
+/* Content */
+.settings-content {
+    background: var(--secondary-color);
+    padding: 20px;
+    border-radius: 12px;
+}
+
+/* Tabs */
+.settings-tab {
+    display: none;
+}
+
+.settings-tab.active {
+    display: block;
+}
+
+@media (max-width: 768px) {
+
+    /* Layout → stack */
+    .settings-layout {
+        grid-template-columns: 1fr;
+    }
+
+    /* Sidebar → horizontal scroll menu */
+    .settings-sidebar {
+        display: flex;
+        overflow-x: auto;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    /* Menu buttons */
+    .settings-menu {
+        white-space: nowrap;
+        flex: 0 0 auto;
+        font-size: 13px;
+        padding: 10px 14px;
+    }
+
+    /* Content spacing */
+    .settings-content {
+        padding: 15px;
+    }
+
+    /* Form grid → single column */
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Inputs full width */
+    .form-grid input,
+    .form-grid textarea {
+        font-size: 14px;
+    }
+
+}
+
+/* Form */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.form-grid input,
+.form-grid textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+/* Toggle */
+.settings-toggle {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.donation-header-controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.donation-header-controls input,
+.donation-header-controls select {
+    flex: 1;
+    min-width: 120px;
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+@media (max-width: 768px) {
+
+    .data-table th,
+    .data-table td {
+        font-size: 12px;
+        padding: 8px;
+        white-space: nowrap;
+    }
+
+    /* Donor column wrap properly */
+    .user-cell {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .user-details h4 {
+        font-size: 13px;
+    }
+
+    .user-details p {
+        font-size: 11px;
+        word-break: break-word;
+    }
+
+}
+
+/* Desktop */
+.volunteer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+/* Mobile FIX */
+@media (max-width: 768px) {
+
+    .volunteer-grid {
+        grid-template-columns: 1fr; /* STACK */
+    }
+
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap; /* IMPORTANT */
+}
+
+.card-header input {
+    width: 100%;
+    max-width: 200px;
+}
+
+@media (max-width: 768px) {
+
+    .card div[style*="display: flex"][style*="align-items: center"] {
+        flex-wrap: wrap;
+        gap: 10px !important;
+    }
+
+}
+
+/* Desktop */
+.event-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+/* Mobile FIX */
+@media (max-width: 768px) {
+
+    .event-grid {
+        grid-template-columns: 1fr; /* STACK */
+    }
+
+}
+
+@media (max-width: 768px) {
+
+    #eventCards {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .event-card {
+        padding: 12px;
+    }
+
+}
+
+@media (max-width: 768px) {
+
+    .calendar-widget {
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    .calendar-grid {
+        grid-template-columns: repeat(7, 1fr);
+        font-size: 12px;
+    }
+
+    .calendar-day {
+        padding: 8px 4px;
+    }
+
+}
+
+@media (max-width: 768px) {
+
+    .calendar-header {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .chart-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+}
+
+.campaign-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 20px !important;
+    width: 100%;
+}
+
+
+.campaign-modern-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+}
+
+.campaign-modern-card {
+    background: var(--white-color);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    transition: 0.4s;
+    display: flex;
+    flex-direction: column;
+    animation: slideUp 0.5s ease;
+}
+
+.campaign-modern-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: var(--shadow-lg);
+}
+
+.campaign-img {
+    height: 120px;
+    background: linear-gradient(135deg, #FF6D00, #ff8533);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    color: white;
+}
+
+.campaign-body {
+    padding: 20px;
+}
+
+.campaign-body h3 {
+    font-size: 18px;
+    margin-bottom: 6px;
+}
+
+.campaign-body p {
+    font-size: 13px;
+    color: var(--text-color);
+    margin-bottom: 12px;
+}
+
+.campaign-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+
+.campaign-btn {
+    width: 100%;
+    justify-content: center;
+}
+
+/* Progress Animation */
+.progress-fill {
+    animation: progressGrow 1.5s ease;
+}
+
+@keyframes progressGrow {
+    from { width: 0; }
+}
+
+
+.event-modern-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+.event-modern-card {
+    display: flex;
+    gap: 16px;
+    background: var(--white-color);
+    padding: 20px;
+    border-radius: 18px;
+    box-shadow: var(--shadow-md);
+    transition: 0.3s;
+    animation: slideUp 0.5s ease;
+}
+
+.event-modern-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+}
+
+.event-date {
+    min-width: 60px;
+    height: 70px;
+    background: var(--accent-color);
+    color: white;
+    border-radius: 12px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.event-date .day {
+    font-size: 18px;
+}
+
+.event-date .month {
+    font-size: 12px;
+}
+
+.event-content h3 {
+    font-size: 16px;
+    margin-bottom: 6px;
+}
+
+.event-content p {
+    font-size: 13px;
+    color: var(--text-color);
+    margin-bottom: 10px;
+}
+
+.event-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-bottom: 12px;
+    color: var(--text-color);
+}
+
+.event-meta i {
+    margin-right: 4px;
+    color: var(--accent-color);
+}
+
+.event-btn {
+    width: 100%;
+    justify-content: center;
+}
+
+.profile-layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 24px;
+}
+
+/* Profile Card */
+.profile-card {
+    background: var(--white-color);
+    padding: 25px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: var(--shadow-md);
+    animation: slideUp 0.5s ease;
+}
+
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: bold;
+    margin: 0 auto 15px;
+}
+
+.profile-name {
+    font-size: 18px;
+    margin-bottom: 4px;
+}
+
+.profile-role {
+    font-size: 13px;
+    color: var(--text-color);
+    margin-bottom: 15px;
+}
+
+.profile-info p {
+    font-size: 13px;
+    margin-bottom: 8px;
+    color: var(--text-color);
+}
+
+.profile-info i {
+    margin-right: 6px;
+    color: var(--accent-color);
+}
+
+/* Form Card */
+.profile-form-card {
+    background: var(--white-color);
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: var(--shadow-md);
+    animation: slideUp 0.6s ease;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .profile-layout {
+        grid-template-columns: 1fr;
+    }
+}
+    </style>
+</head>
+<body>
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileMenu()"></div>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+       <div class="sidebar-header">
+    <img src="images/logo.png" alt="Logo" class="logo-img">
+</div>
+
+            <div class="nav-container">
+    <div class="nav-section">
+        <div class="nav-label">Main Menu</div>
+
+            <a href="#" class="nav-item active" onclick="openSection('dashboardSection', this); return false;">
+        <i class="fas fa-th-large"></i>
+        <span class="nav-text">Dashboard</span>
+    </a>
+
+    <a href="#" class="nav-item" onclick="openSection('myDonationsSection', this); return false;">
+        <i class="fas fa-hand-holding-heart"></i>
+        <span class="nav-text">My Donations</span>
+    </a>
+
+    <a href="#" class="nav-item" onclick="openSection('campaignsSection', this); return false;">
+        <i class="fas fa-bullhorn"></i>
+        <span class="nav-text">Campaigns</span>
+    </a>
+
+    <a href="#" class="nav-item" onclick="openSection('eventsSection', this); return false;">
+        <i class="fas fa-calendar-alt"></i>
+        <span class="nav-text">Events</span>
+    </a>
+</div>
+
+<div class="nav-section">
+    <div class="nav-label">Account</div>
+
+    <a href="#" class="nav-item" onclick="openSection('profileSection', this); return false;">
+        <i class="fas fa-user"></i>
+        <span class="nav-text">My Profile</span>
+    </a>
+
+    <a href="#" class="nav-item" onclick="openSection('settingsSection', this); return false;">
+        <i class="fas fa-cog"></i>
+        <span class="nav-text">Settings</span>
+    </a>
+
+    <a href="#" class="nav-item" onclick="logoutUser()">
+        <i class="fas fa-sign-out-alt"></i>
+        <span class="nav-text">Logout</span>
+    </a>
+
+    </div>
+</div>
+            <!-- Fixed Profile Section -->
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar">JD</div>
+                    <div class="user-info">
+                        <div class="user-name" id="userEmailDisplay">Donar</div>
+                        <div class="user-role">Donar</div>
+                        <div class="user-status">
+                            <span class="status-dot"></span>
+                            <span>Online</span>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right user-menu-icon"></i>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="toggle-btn" onclick="toggleMobileMenu()" id="toggleBtn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h2 class="header-title">Donar Dashboard</h2>
+                </div>
+                <div class="header-right">
+                    <button class="header-btn" onclick="window.location.href='404.html'">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-dot"></span>
+                    </button>
+                    <button class="header-btn" onclick="window.location.href='404.html'">
+                        <i class="fas fa-envelope"></i>
+                    </button>
+                    <button class="header-btn" onclick="window.location.href='404.html'">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <div class="content">
+              <div id="dashboardSection" class="page-section">
+
+    <!-- Header -->
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Welcome Back 👋</h1>
+            <p class="page-subtitle">Track your donations, impact, and campaigns in one place.</p>
+        </div>
+        <div class="page-actions">
+            <button class="btn btn-secondary" onclick="window.location.href='404.html'">
+                <i class="fas fa-history"></i> Donation History
+            </button>
+            <button class="btn btn-primary" onclick="window.location.href='404.html'">
+                <i class="fas fa-donate"></i> Donate Now
+            </button>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-icon"><i class="fas fa-donate"></i></div>
+            </div>
+            <div class="stat-value counter" data-target="12500">0</div>
+            <div class="stat-label">Total Donated (₹)</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-icon"><i class="fas fa-heart"></i></div>
+            </div>
+            <div class="stat-value counter" data-target="18">0</div>
+            <div class="stat-label">Campaigns Supported</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+            </div>
+            <div class="stat-value counter" data-target="320">0</div>
+            <div class="stat-label">People Helped</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+            </div>
+            <div class="stat-value counter" data-target="6">0</div>
+            <div class="stat-label">Events Participated</div>
+        </div>
+
+    </div>
+
+    <!-- Impact + Campaign -->
+    <div class="charts-section">
+
+        <!-- Impact Chart -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3 class="chart-title">Your Donation Growth</h3>
+            </div>
+
+            <div class="bar-chart">
+                <div class="bar" style="--h:40%">Jan</div>
+                <div class="bar" style="--h:60%">Feb</div>
+                <div class="bar" style="--h:80%">Mar</div>
+                <div class="bar" style="--h:50%">Apr</div>
+                <div class="bar" style="--h:90%">May</div>
+            </div>
+        </div>
+
+        <!-- Impact Donut -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3 class="chart-title">Your Impact</h3>
+            </div>
+
+            <div class="donut-chart-container">
+                <div class="modern-donut">
+                    <div style="text-align:center;">
+                        <h2>75%</h2>
+                        <p>Impact Score</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Campaigns -->
+    <div class="table-card">
+        <div class="card-header">
+            <h3 class="chart-title">Active Campaigns</h3>
+        </div>
+
+        <div class="campaign-grid">
+
+            <div class="campaign-card">
+                <h4>Education Support</h4>
+                <p>Helping students with school supplies</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width:70%"></div>
+                </div>
+                <div class="campaign-meta">
+                    <span>₹70,000 Raised</span>
+                    <span>70%</span>
+                </div>
+            </div>
+
+            <div class="campaign-card">
+                <h4>Medical Aid</h4>
+                <p>Support for emergency treatments</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width:50%"></div>
+                </div>
+                <div class="campaign-meta">
+                    <span>₹50,000 Raised</span>
+                    <span>50%</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Recent Donations -->
+    <div class="table-card">
+        <div class="card-header">
+            <h3 class="chart-title">Your Recent Donations</h3>
+        </div>
+
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Campaign</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Education Support</td>
+                        <td class="amount">₹2,000</td>
+                        <td>12 Mar 2026</td>
+                    </tr>
+                    <tr>
+                        <td>Medical Aid</td>
+                        <td class="amount">₹1,500</td>
+                        <td>05 Mar 2026</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<div id="myDonationsSection" class="page-section">
+
+    <!-- Header -->
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">My Donations</h1>
+            <p class="page-subtitle">Track all your contributions and impact</p>
+        </div>
+
+        <div class="page-actions">
+            <button class="btn btn-secondary" onclick="window.location.href='404.html'">
+                <i class="fas fa-download"></i> Export
+            </button>
+            <button class="btn btn-primary" onclick="window.location.href='404.html'">
+                <i class="fas fa-donate"></i> Donate Now
+            </button>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-icon"><i class="fas fa-rupee-sign"></i></div>
+            </div>
+            <div class="stat-value">₹15,000</div>
+            <div class="stat-label">Total Donated</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-icon"><i class="fas fa-list"></i></div>
+            </div>
+            <div class="stat-value">12</div>
+            <div class="stat-label">Total Donations</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-icon"><i class="fas fa-bullhorn"></i></div>
+            </div>
+            <div class="stat-value">5</div>
+            <div class="stat-label">Campaigns Supported</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-icon"><i class="fas fa-calendar"></i></div>
+            </div>
+            <div class="stat-value">2026</div>
+            <div class="stat-label">Active Year</div>
+        </div>
+
+    </div>
+
+    <!-- Donation History -->
+    <div class="table-card">
+        <div class="card-header">
+            <h3 class="chart-title">Donation History</h3>
+        </div>
+
+        <div class="table-responsive">
+            <table class="data-table" id="donationTable">
+                <thead>
+                    <tr>
+                        <th>Campaign</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>
+                            <div class="user-cell">
+                                <div class="user-thumb">ES</div>
+                                <div class="user-details">
+                                    <h4>Education Support</h4>
+                                    <p>Helping students</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="amount">₹2,000</td>
+                        <td><span class="status-badge active">Completed</span></td>
+                        <td>12 Mar 2026</td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="user-cell">
+                                <div class="user-thumb">MA</div>
+                                <div class="user-details">
+                                    <h4>Medical Aid</h4>
+                                    <p>Emergency support</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="amount">₹1,500</td>
+                        <td><span class="status-badge active">Completed</span></td>
+                        <td>05 Mar 2026</td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="user-cell">
+                                <div class="user-thumb">FD</div>
+                                <div class="user-details">
+                                    <h4>Food Drive</h4>
+                                    <p>Food distribution</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="amount">₹800</td>
+                        <td><span class="status-badge pending">Pending</span></td>
+                        <td>01 Mar 2026</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+                <div id="campaignsSection" class="page-section">
+
+    <!-- Header -->
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Campaigns</h1>
+            <p class="page-subtitle">Explore and support active campaigns</p>
+        </div>
+
+        <div class="page-actions">
+            <button class="btn btn-secondary" onclick="window.location.href='404.html'">
+                <i class="fas fa-filter"></i> Filter
+            </button>
+            <button class="btn btn-primary" onclick="window.location.href='404.html'">
+                <i class="fas fa-plus"></i> Start Campaign
+            </button>
+        </div>
+    </div>
+
+    <!-- Campaign Grid -->
+    <div class="campaign-modern-grid">
+
+        <!-- Card 1 -->
+        <div class="campaign-modern-card">
+            <div class="campaign-img">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+
+            <div class="campaign-body">
+                <h3>Education Support</h3>
+                <p>Helping underprivileged students with school supplies.</p>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width:70%"></div>
+                </div>
+
+                <div class="campaign-meta">
+                    <span>₹70,000 Raised</span>
+                    <span>70%</span>
+                </div>
+
+                <button class="btn btn-primary campaign-btn" onclick="window.location.href='404.html'">Donate</button>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="campaign-modern-card">
+            <div class="campaign-img">
+                <i class="fas fa-heartbeat"></i>
+            </div>
+
+            <div class="campaign-body">
+                <h3>Medical Aid</h3>
+                <p>Providing emergency medical support for families.</p>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width:50%"></div>
+                </div>
+
+                <div class="campaign-meta">
+                    <span>₹50,000 Raised</span>
+                    <span>50%</span>
+                </div>
+
+                <button class="btn btn-primary campaign-btn" onclick="window.location.href='404.html'">Donate</button>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="campaign-modern-card">
+            <div class="campaign-img">
+                <i class="fas fa-utensils"></i>
+            </div>
+
+            <div class="campaign-body">
+                <h3>Food Drive</h3>
+                <p>Providing meals to homeless communities.</p>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width:80%"></div>
+                </div>
+
+                <div class="campaign-meta">
+                    <span>₹80,000 Raised</span>
+                    <span>80%</span>
+                </div>
+
+                <button class="btn btn-primary campaign-btn" onclick="window.location.href='404.html'">Donate</button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+               
+<div id="eventsSection" class="page-section">
+
+    <!-- Header -->
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Events</h1>
+            <p class="page-subtitle">Join and manage your event participation</p>
+        </div>
+
+        <div class="page-actions">
+            <button class="btn btn-secondary" onclick="window.location.href='404.html'">
+                <i class="fas fa-calendar"></i> Calendar
+            </button>
+        </div>
+    </div>
+
+    <!-- ================= UPCOMING EVENTS ================= -->
+    <div class="table-card">
+        <div class="card-header">
+            <h3 class="chart-title">Upcoming Events</h3>
+        </div>
+
+        <div class="event-modern-grid">
+
+            <div class="event-modern-card">
+                <div class="event-date">
+                    <span class="day">12</span>
+                    <span class="month">Mar</span>
+                </div>
+                <div class="event-content">
+                    <h3>Food Distribution</h3>
+                    <p>Helping homeless people</p>
+                    <div class="event-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Chennai</span>
+                        <span><i class="fas fa-clock"></i> 10 AM</span>
+                    </div>
+                    <button class="btn btn-primary event-btn" onclick="window.location.href='404.html'">Join</button>
+                </div>
+            </div>
+
+            <div class="event-modern-card">
+                <div class="event-date">
+                    <span class="day">18</span>
+                    <span class="month">Mar</span>
+                </div>
+                <div class="event-content">
+                    <h3>Medical Camp</h3>
+                    <p>Free health checkups</p>
+                    <div class="event-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Salem</span>
+                        <span><i class="fas fa-clock"></i> 9 AM</span>
+                    </div>
+                    <button class="btn btn-primary event-btn" onclick="window.location.href='404.html'">Join</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ================= MY EVENTS ================= -->
+    <div class="table-card">
+        <div class="card-header">
+            <h3 class="chart-title">My Registered Events</h3>
+        </div>
+
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Event</th>
+                        <th>Location</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>
+                            <div class="user-cell">
+                                <div class="user-thumb">FD</div>
+                                <div class="user-details">
+                                    <h4>Food Distribution</h4>
+                                    <p>Community Service</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Chennai</td>
+                        <td>12 Mar 2026</td>
+                        <td><span class="status-badge active">Joined</span></td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="user-cell">
+                                <div class="user-thumb">MC</div>
+                                <div class="user-details">
+                                    <h4>Medical Camp</h4>
+                                    <p>Health Support</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Salem</td>
+                        <td>18 Mar 2026</td>
+                        <td><span class="status-badge pending">Pending</span></td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<div id="profileSection" class="page-section">
+
+    <!-- Header -->
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">My Profile</h1>
+            <p class="page-subtitle">Manage your personal information</p>
+        </div>
+
+        <div class="page-actions">
+            <button class="btn btn-secondary" onclick="window.location.href='404.html'">
+                <i class="fas fa-lock"></i> Change Password
+            </button>
+            <button class="btn btn-primary" onclick="window.location.href='404.html'">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+        </div>
+    </div>
+
+    <!-- Profile Layout -->
+    <div class="profile-layout">
+
+        <!-- LEFT PROFILE CARD -->
+        <div class="profile-card">
+
+            <div class="profile-avatar">
+                JD
+            </div>
+
+            <h3 class="profile-name">John Doe</h3>
+            <p class="profile-role">Donor</p>
+
+            <div class="profile-info">
+                <p><i class="fas fa-envelope"></i> johndoe@gmail.com</p>
+                <p><i class="fas fa-phone"></i> +91 1234567890</p>
+                <p><i class="fas fa-map-marker-alt"></i> Tamil Nadu, India</p>
+            </div>
+
+            <button class="btn btn-secondary" style="width:100%;" onclick="window.location.href='404.html'">
+                <i class="fas fa-upload"></i> Upload Photo
+            </button>
+
+        </div>
+
+        <!-- RIGHT FORM -->
+        <div class="profile-form-card">
+
+            <h3 class="chart-title">Edit Profile</h3>
+
+            <div class="form-grid">
+
+                <input type="text" placeholder="Full Name" value="John Doe">
+                <input type="email" placeholder="Email" value="johndoe@gmail.com">
+
+                <input type="text" placeholder="Phone Number" value="+91 1234567890">
+                <input type="text" placeholder="Location" value="Tamil Nadu">
+
+                <textarea placeholder="Address">Salem, Tamil Nadu</textarea>
+
+                <select>
+                    <option>Donor</option>
+                    <option>Volunteer</option>
+                </select>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div id="settingsSection" class="page-section">
+
+    <!-- Header -->
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Settings</h1>
+            <p class="page-subtitle">Manage your account preferences</p>
+        </div>
+
+        <div class="page-actions">
+            <button class="btn btn-primary" onclick="window.location.href='404.html'">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+        </div>
+    </div>
+
+    <!-- Layout -->
+    <div class="settings-layout">
+
+        <!-- Sidebar -->
+        <div class="settings-sidebar">
+            <div class="settings-menu active" onclick="openSettingsTab('profileTab', this)">Profile</div>
+            <div class="settings-menu" onclick="openSettingsTab('securityTab', this)">Security</div>
+            <div class="settings-menu" onclick="openSettingsTab('notificationTab', this)">Notifications</div>
+        </div>
+
+        <!-- Content -->
+        <div class="settings-content">
+
+            <!-- PROFILE TAB -->
+            <div id="profileTab" class="settings-tab active">
+                <h3>Profile Settings</h3>
+
+                <div class="form-grid">
+                    <input type="text" placeholder="Full Name">
+                    <input type="email" placeholder="Email">
+                    <input type="text" placeholder="Phone">
+                    <input type="text" placeholder="Location">
+                </div>
+            </div>
+
+            <!-- SECURITY TAB -->
+            <div id="securityTab" class="settings-tab">
+                <h3>Security Settings</h3>
+
+                <div class="form-grid">
+                    <input type="password" placeholder="Current Password">
+                    <input type="password" placeholder="New Password">
+                    <input type="password" placeholder="Confirm Password">
+                </div>
+            </div>
+
+            <!-- NOTIFICATION TAB -->
+            <div id="notificationTab" class="settings-tab">
+                <h3>Notification Settings</h3>
+
+                <div class="settings-toggle">
+                    <span>Email Notifications</span>
+                    <input type="checkbox" checked>
+                </div>
+
+                <div class="settings-toggle">
+                    <span>SMS Alerts</span>
+                    <input type="checkbox">
+                </div>
+
+                <div class="settings-toggle">
+                    <span>Campaign Updates</span>
+                    <input type="checkbox" checked>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+            </div>
+        </main>
+    </div>
+
+        <script>
+// ✅ Toggle Sidebar (Mobile)
+function toggleMobileMenu() {
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("mobileOverlay");
+
+    sidebar.classList.toggle("mobile-open");
+    overlay.classList.toggle("active");
+}
+
+// ✅ Close Sidebar
+function closeMobileMenu() {
+    document.getElementById("sidebar").classList.remove("mobile-open");
+    document.getElementById("mobileOverlay").classList.remove("active");
+}
+
+
+// ✅ OPEN SECTION (FINAL FIXED VERSION)
+function openSection(sectionId, element) {
+
+    // 1. Hide all sections
+    document.querySelectorAll('.page-section').forEach(sec => {
+        sec.style.display = 'none';
+    });
+
+    // 2. Show selected section
+    const target = document.getElementById(sectionId);
+    if (target) {
+        target.style.display = 'block';
+    }
+
+    // 3. Active menu highlight
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+
+    if (element) {
+        element.classList.add('active');
+    }
+
+    // 4. ✅ MOBILE AUTO CLOSE (MAIN FIX)
+    if (window.innerWidth <= 768) {
+        closeMobileMenu();
+    }
+
+    // 5. ✅ REPORT SECTION ANIMATION (YOUR LOGIC)
+    if (sectionId === "reportSection") {
+        setTimeout(animateCounters, 200);
+    }
+}
+
+
+// ✅ COUNTER ANIMATION (for report section)
+function animateCounters() {
+    const counters = document.querySelectorAll('.counter');
+
+    counters.forEach(counter => {
+        counter.innerText = '0';
+
+        const update = () => {
+            const target = +counter.getAttribute('data-target');
+            const current = +counter.innerText;
+
+            const increment = target / 100;
+
+            if (current < target) {
+                counter.innerText = Math.ceil(current + increment);
+                setTimeout(update, 20);
+            } else {
+                counter.innerText = target;
+            }
+        };
+
+        update();
+    });
+}
+
+
+// ✅ Overlay click close (extra safety)
+document.getElementById("mobileOverlay")
+    .addEventListener("click", closeMobileMenu);
+
+</script>
+
+    <script>
+
+        // Desktop Sidebar Toggle
+        function toggleSidebar() {
+            if (window.innerWidth > 768) {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.toggle('collapsed');
+                const isCollapsed = sidebar.classList.contains('collapsed');
+                localStorage.setItem('sidebarCollapsed', isCollapsed);
+            }
+        }
+
+        // Handle Resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                closeMobileMenu();
+                const sidebar = document.getElementById('sidebar');
+                const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+                if (isCollapsed) {
+                    sidebar.classList.add('collapsed');
+                } else {
+                    sidebar.classList.remove('collapsed');
+                }
+            } else {
+                document.getElementById('sidebar').classList.remove('collapsed');
+            }
+        });
+
+        // Initialize
+        window.addEventListener('load', () => {
+            if (window.innerWidth > 768) {
+                const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+                if (isCollapsed) {
+                    document.getElementById('sidebar').classList.add('collapsed');
+                }
+            }
+
+            // Animate progress bars
+            setTimeout(() => {
+                document.querySelectorAll('.progress-fill').forEach(bar => {
+                    const width = bar.style.width;
+                    bar.style.width = '0';
+                    setTimeout(() => {
+                        bar.style.width = width;
+                    }, 100);
+                });
+            }, 500);
+        });
+
+        // Navigation Active State
+        function setActive(element) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            element.classList.add('active');
+            if (window.innerWidth <= 768) {
+                closeMobileMenu();
+            }
+        }
+
+        // Chart Period Change
+        function changePeriod(period) {
+            event.target.parentElement.querySelectorAll('.chart-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            // Animate chart reload
+            const line = document.querySelector('.chart-line');
+            const area = document.querySelector('.chart-area');
+            line.style.animation = 'none';
+            area.style.animation = 'none';
+            setTimeout(() => {
+                line.style.animation = '';
+                area.style.animation = '';
+            }, 10);
+        }
+
+        // Quick Actions
+        function quickAction(type) {
+            alert(`Opening ${type} form...`);
+        }
+
+        function showQuickActions() {
+            alert('Quick Actions Menu:\n1. Add Donation\n2. Add Volunteer\n3. Create Event\n4. Send Message');
+        }
+
+        // Header Actions
+        function showNotifications() {
+            alert('Notifications:\n• New donation received\n• Volunteer application pending\n• Event reminder');
+        }
+
+        function showMessages() {
+            alert('Messages:\n• 3 unread messages');
+        }
+
+        function showSettings() {
+            alert('Settings panel would open here');
+        }
+
+        function toggleUserMenu() {
+            alert('User menu:\n• Profile\n• Settings\n• Logout');
+        }
+
+        // Page Actions
+        function exportReport() {
+            alert('Exporting report...');
+        }
+
+        function addNewDonation() {
+            alert('Opening new donation form...');
+        }
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.stat-card, .chart-card, .activity-card, .table-card, .action-card, .calendar-widget').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'all 0.6s ease';
+            observer.observe(card);
+        });
+
+        // Real-time updates simulation
+        setInterval(() => {
+            const dot = document.querySelector('.notification-dot');
+            if (Math.random() > 0.7) {
+                dot.style.opacity = dot.style.opacity === '0' ? '1' : '0';
+            }
+        }, 3000);
+
+        function logoutUser() {
+    window.location.href = "login.html";
+}
+    </script>
+
+
+    
+    <script>
+        function openSettingsTab(tabId, element) {
+
+    // Hide all tabs
+    document.querySelectorAll('.settings-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+
+    // Show selected
+    document.getElementById(tabId).classList.add('active');
+
+    // Menu active
+    document.querySelectorAll('.settings-menu').forEach(menu => {
+        menu.classList.remove('active');
+    });
+
+    element.classList.add('active');
+}
+
+// Save
+function saveSettings() {
+    alert("Settings saved successfully!");
+}
+    </script>
+
+    <script>
+        // Show logged-in email
+window.addEventListener("DOMContentLoaded", () => {
+    const email = localStorage.getItem("userEmail");
+
+    if (email) {
+        document.getElementById("userEmailDisplay").innerText = email;
+    }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    animateCounters();
+});
+    </script>
+    
+
+</body>
+</html>
