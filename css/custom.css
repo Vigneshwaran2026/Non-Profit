@@ -512,7 +512,7 @@ body{
     right: 0;
     width: 20px;
     height: 20px;
-    background-image: url(../images/arrow-white.svg);
+    background-image: url(../images/arrow-white.webp);
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
@@ -683,7 +683,7 @@ body{
     top: 50%;
     left: 0;
     transform: translateY(-50%);
-    background: url('../images/icon-sub-heading.svg');
+    background: url('../images/icon-sub-heading.webp');
     background-repeat: no-repeat;
     background-position: left center;
     background-size: cover;
@@ -1253,7 +1253,7 @@ header.main-header .header-sticky.active{
 }
 
 .hero-list ul li{
-	background: url('../images/icon-check.svg') no-repeat;
+	background: url('../images/icon-check.webp') no-repeat;
     background-position: left center;
     background-size: 26px auto;
 	color: var(--white-color);
@@ -1454,7 +1454,7 @@ header.main-header .header-sticky.active{
 	width: 100%;
 	background-color: var(--secondary-color);
 	display: inline-block;
-    mask-image: url('../images/helped-fund-box-mask.svg');
+    mask-image: url('../images/helped-fund-box-mask.webp');
     mask-size: contain;
     mask-position: bottom center;
     mask-repeat: no-repeat;
@@ -1508,7 +1508,7 @@ header.main-header .header-sticky.active{
 /************************************/
 
 .our-services{
-	background: url('../images/our-service-bg.svg'), var(--secondary-color);
+	background: url('../images/our-service-bg.webp'), var(--secondary-color);
 	background-repeat: no-repeat;
 	background-position: center center;
 	background-size: 100% auto;
@@ -1743,7 +1743,7 @@ header.main-header .header-sticky.active{
 /************************************/
 
 .our-causes{
-	background: url(../images/our-service-bg.svg), var(--secondary-color);
+	background: url(../images/our-service-bg.webp), var(--secondary-color);
     background-repeat: no-repeat;
     background-position: center center;
     background-size: 100% auto;
@@ -1858,7 +1858,7 @@ header.main-header .header-sticky.active{
 
 .why-choose-list ul li{
 	width: calc(50% - 10px);
-	background: url('../images/icon-check-dark.svg') no-repeat;
+	background: url('../images/icon-check-dark.webp') no-repeat;
     background-position: left center;
     background-size: 26px auto;
 	color: var(--primary-color);
@@ -1914,7 +1914,7 @@ header.main-header .header-sticky.active{
 
 .our-program{
 	position: relative;
-	background-image: linear-gradient(180deg, transparent 80%, var(--white-color) 20%), url(../images/our-program-bg-image.jpg);
+	background-image: linear-gradient(180deg, transparent 80%, var(--white-color) 20%), url(../images/our-program-bg-image.webp);
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
@@ -2160,7 +2160,7 @@ header.main-header .header-sticky.active{
 
 .donate-now{
 	position: relative;
-	background: url('../images/donate-now-bg-image.jpg') no-repeat;
+	background: url('../images/donate-now-bg-image.webp') no-repeat;
 	background-position: center center;
 	background-size: cover;
 	padding: 150px 0;
@@ -2426,7 +2426,7 @@ header.main-header .header-sticky.active{
 /************************************/
 
 .our-testimonials{
-	background: url('../images/testimonial-bg-image.png'), var(--secondary-color);
+	background: url('../images/testimonial-bg-image.webp'), var(--secondary-color);
 	background-repeat: no-repeat;
 	background-position: right center;
 	background-size: auto;
@@ -2801,7 +2801,7 @@ header.main-header .header-sticky.active{
 /************************************/
 
 .main-footer{
-    background: url(../images/footer-bg.png), var(--primary-color);
+    background: url(../images/footer-bg.webp), var(--primary-color);
 	background-repeat: no-repeat;
     background-position: bottom center;
     background-size: auto;
@@ -3043,7 +3043,7 @@ header.main-header .header-sticky.active{
 
 .page-header{
     position: relative;
-	background: url('../images/page-header-bg.jpg');
+	background: url('../images/page-header-bg.webp');
 	background-repeat: no-repeat;
 	background-position: center center;
 	background-size: cover;
@@ -3113,7 +3113,7 @@ header.main-header .header-sticky.active{
 
 .our-approach{
 	padding: 100px 0;
-	background: url('../images/our-service-bg.svg'), var(--secondary-color);
+	background: url('../images/our-service-bg.webp'), var(--secondary-color);
     background-repeat: no-repeat;
     background-position: center center;
     background-size: auto;
@@ -3260,7 +3260,7 @@ header.main-header .header-sticky.active{
 }
 
 .how-we-help-body ul li{
-	background: url('../images/icon-check.svg') no-repeat;
+	background: url('../images/icon-check.webp') no-repeat;
     background-position: left center;
     background-size: 26px auto;
 	color: var(--white-color);
@@ -3730,7 +3730,7 @@ header.main-header .header-sticky.active{
 	position: absolute;
 	top: 50%;
 	right: 0;
-	background: url(../images/arrow-text.svg) no-repeat;
+	background: url(../images/arrow-text.webp) no-repeat;
 	background-size: cover;
 	width: 20px;
 	height: 20px;
@@ -3744,7 +3744,7 @@ header.main-header .header-sticky.active{
 
 .sidebar-cta-box{
 	position: relative;
-	background-image: url(../images/sidebar-cta-bg-img.jpg);
+	background-image: url(../images/sidebar-cta-bg-img.webp);
 	background-repeat: no-repeat;
 	background-position: center center;
 	background-size: cover;
@@ -3839,7 +3839,7 @@ header.main-header .header-sticky.active{
 }
 
 .service-entry ul li{
-	background: url(../images/icon-check-dark.svg) no-repeat center left;
+	background: url(../images/icon-check-dark.webp) no-repeat center left;
     background-size: 26px auto;
 	width: calc(33.33% - 20px);
 	line-height: 1.5em;
@@ -4220,7 +4220,7 @@ header.main-header .header-sticky.active{
 }
 
 .post-entry blockquote{
-	background: url('../images/icon-blockquote.svg'), var(--primary-color);
+	background: url('../images/icon-blockquote.webp'), var(--primary-color);
 	background-repeat: no-repeat;
 	background-position: 35px 25px;
     background-size: 55px;
@@ -4371,7 +4371,7 @@ header.main-header .header-sticky.active{
 
 .program-entry ul li{
 	width: calc(50% - 15px);
-	background: url(../images/icon-check-dark.svg) no-repeat;
+	background: url(../images/icon-check-dark.webp) no-repeat;
 	background-position: center left;
     background-size: 26px auto;
 	line-height: 1.5em;
@@ -4773,7 +4773,7 @@ header.main-header .header-sticky.active{
 }
 
 .team-experience-body ul li{
-	background: url('../images/icon-check-dark.svg') no-repeat;
+	background: url('../images/icon-check-dark.webp') no-repeat;
     background-position: left center;
     background-size: 26px auto;
 	width: calc(50% - 15px);
