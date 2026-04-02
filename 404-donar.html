@@ -31,6 +31,7 @@
         html, body {
     height: 100%;
     overflow: hidden !important;
+        }
 
     .btn-default{
 	position: relative;
@@ -101,8 +102,12 @@
 /***    34. 404 Error Page css    ***/
 /************************************/
 
-.error-page{
-	padding: 40px 0;
+.error-page {
+    min-height: 100vh;   /* Full screen height */
+    display: flex;
+    align-items: center; /* Vertical center */
+    justify-content: center; /* Horizontal center */
+    padding: 20px;
 }
 
 .error-page-image{
@@ -146,7 +151,6 @@
     width: auto;
 }
 
-}
     </style>
 </head>
 <body>
@@ -164,7 +168,7 @@
                         </div>
                         <div class="error-page-content-body">
                             <p class="wow fadeInUp" data-wow-delay="0.25s">Sorry, We can't find the page you're looking.</p>
-                            <a class="btn-default wow fadeInUp" data-wow-delay="0.5s" href="donar-dashboard.html">back to Dashboard</a>
+                            <a class="btn-default wow fadeInUp" data-wow-delay="0.5s" href="donar-dashboard.html">back to home</a>
                         </div>
                     </div>
                 </div>
